@@ -34,6 +34,17 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
+          // Log request (sanitize password)
+          console.log('🚀 HTTP Request (Auth):', {
+            method: 'POST',
+            url: `${API_BASE_URL}/auth/login`,
+            data: {
+              email: credentials.email,
+              password: '[REDACTED]',
+            },
+            timestamp: new Date().toISOString(),
+          });
+
           const response = await axios.post(
             `${API_BASE_URL}/auth/login`,
             {
@@ -46,6 +57,18 @@ export const authOptions: NextAuthOptions = {
               },
             }
           );
+
+          // Log response (sanitize token)
+          console.log('✅ HTTP Response (Auth):', {
+            status: response.status,
+            statusText: response.statusText,
+            url: `${API_BASE_URL}/auth/login`,
+            data: {
+              ...response.data,
+              accessToken: response.data?.accessToken ? '[REDACTED]' : undefined,
+            },
+            timestamp: new Date().toISOString(),
+          });
 
           const { accessToken, user, hasProfile } = response.data;
 
@@ -63,6 +86,16 @@ export const authOptions: NextAuthOptions = {
 
           return null;
         } catch (error: any) {
+          // Log error response
+          console.error('❌ HTTP Error Response (Auth):', {
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            url: `${API_BASE_URL}/auth/login`,
+            data: error.response?.data,
+            message: error.message,
+            timestamp: new Date().toISOString(),
+          });
+
           const message =
             error.response?.data?.message || 'Login gagal. Periksa email dan password Anda.';
           throw new Error(message);
@@ -86,6 +119,21 @@ export const authOptions: NextAuthOptions = {
           
           console.log('Google OAuth: Using intendedRole:', intendedRole);
           
+          // Log request (sanitize tokens)
+          console.log('🚀 HTTP Request (Auth - Google OAuth):', {
+            method: 'POST',
+            url: `${API_BASE_URL}/auth/google`,
+            data: {
+              accessToken: '[REDACTED]',
+              idToken: '[REDACTED]',
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              intendedRole,
+            },
+            timestamp: new Date().toISOString(),
+          });
+
           // Call backend with intendedRole
           const response = await axios.post(
             `${API_BASE_URL}/auth/google`,
@@ -103,6 +151,18 @@ export const authOptions: NextAuthOptions = {
               },
             }
           );
+
+          // Log response (sanitize token)
+          console.log('✅ HTTP Response (Auth - Google OAuth):', {
+            status: response.status,
+            statusText: response.statusText,
+            url: `${API_BASE_URL}/auth/google`,
+            data: {
+              ...response.data,
+              accessToken: response.data?.accessToken ? '[REDACTED]' : undefined,
+            },
+            timestamp: new Date().toISOString(),
+          });
 
           const { accessToken, user: backendUser, hasProfile } = response.data;
 
@@ -127,21 +187,37 @@ export const authOptions: NextAuthOptions = {
             return true;
           }
 
-          console.error('Google OAuth: Missing accessToken or user data');
+          console.error('Google OAuth: Missing accessToken or user data', {
+            responseData: response.data,
+            hasAccessToken: !!accessToken,
+            hasBackendUser: !!backendUser,
+          });
           return false;
         } catch (error: any) {
-          console.error('Google OAuth error:', {
-            message: error.message,
-            response: error.response?.data,
+          // Log error response with more details
+          const errorDetails = {
             status: error.response?.status,
-          });
+            statusText: error.response?.statusText,
+            url: `${API_BASE_URL}/auth/google`,
+            data: error.response?.data,
+            message: error.message,
+            stack: error.stack,
+            timestamp: new Date().toISOString(),
+          };
+          console.error('❌ HTTP Error Response (Auth - Google OAuth):', errorDetails);
+          
+          // If it's a network error (no response), log it differently
+          if (!error.response) {
+            console.error('Network error during Google OAuth:', error.message);
+          }
+          
           // Return false to prevent sign in
           return false;
         }
       }
       return true;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -151,6 +227,25 @@ export const authOptions: NextAuthOptions = {
         token.accessToken = user.accessToken;
         token.hasProfile = user.hasProfile ?? 0;
       }
+      
+      // Refresh hasProfile from backend when session is updated
+      // This ensures hasProfile is always up-to-date after profile completion
+      if (trigger === 'update' && token.accessToken) {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/auth/me`, {
+            headers: {
+              Authorization: `Bearer ${token.accessToken}`,
+            },
+          });
+          if (response.data?.hasProfile !== undefined) {
+            token.hasProfile = response.data.hasProfile;
+          }
+        } catch (error) {
+          // If fetching fails, keep the existing hasProfile value
+          console.warn('Failed to refresh hasProfile from backend:', error);
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {

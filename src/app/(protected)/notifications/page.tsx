@@ -120,9 +120,17 @@ export default function NotificationsPage() {
           {notifications.map((notification) => (
             <Card
               key={notification.id}
-              className={`p-4 transition-colors hover:bg-muted/50 ${
+              className={`cursor-pointer p-4 transition-colors hover:bg-muted/50 ${
                 !notification.isRead ? 'bg-muted/30' : ''
               }`}
+              onClick={() => {
+                if (!notification.isRead) {
+                  // Mark as read will be handled by backend when navigating
+                }
+                if (notification.data?.targetUrl) {
+                  window.location.href = notification.data.targetUrl;
+                }
+              }}
             >
               <div className="flex items-start gap-3">
                 {!notification.isRead && (

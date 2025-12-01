@@ -13,7 +13,7 @@ export interface ToastProps {
 }
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_REMOVE_DELAY = 5000; // 5 seconds
 
 type ToasterToast = ToastProps & {
   id: string;
@@ -97,24 +97,31 @@ export const reducer = (state: State, action: Action): State => {
     case 'DISMISS_TOAST': {
       const { toastId } = action;
 
-      if (toastId) {
-        addToRemoveQueue(toastId);
-      } else {
-        state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id);
-        });
+      // Clear any existing timeout for this toast
+      if (toastId && toastTimeouts.has(toastId)) {
+        clearTimeout(toastTimeouts.get(toastId)!);
+        toastTimeouts.delete(toastId);
       }
+
+      // If specific toastId, remove it immediately
+      if (toastId) {
+        return {
+          ...state,
+          toasts: state.toasts.filter((t) => t.id !== toastId),
+        };
+      }
+
+      // If no toastId, dismiss all
+      state.toasts.forEach((toast) => {
+        if (toastTimeouts.has(toast.id)) {
+          clearTimeout(toastTimeouts.get(toast.id)!);
+          toastTimeouts.delete(toast.id);
+        }
+      });
 
       return {
         ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === toastId || toastId === undefined
-            ? {
-                ...t,
-                open: false,
-              }
-            : t
-        ),
+        toasts: [],
       };
     }
     case 'REMOVE_TOAST':
@@ -165,6 +172,9 @@ function toast({ ...props }: Toast) {
       },
     } as ToasterToast,
   });
+
+  // Automatically remove toast after 5 seconds
+  addToRemoveQueue(id);
 
   return {
     id: id,

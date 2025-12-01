@@ -20,14 +20,14 @@ export default function CreatorDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Memuat...</p>
+          <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">Memuat...</p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 animate-pulse rounded-lg bg-muted" />
+            <div key={i} className="h-24 animate-pulse rounded-lg bg-muted sm:h-32" />
           ))}
         </div>
       </div>
@@ -41,18 +41,18 @@ export default function CreatorDashboardPage() {
   const nearestDeadline = campaigns?.nearestDeadline;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Hero Bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Halo, {displayName}</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">Halo, {displayName}</h1>
           <div className="mt-2">
-            <Badge variant={verificationStatus === 'SOCIAL_VERIFIED' ? 'default' : 'secondary'}>
+            <Badge variant={verificationStatus === 'SOCIAL_VERIFIED' ? 'default' : 'secondary'} className="text-xs sm:text-sm">
               {verificationStatus === 'SOCIAL_VERIFIED' ? 'Verified' : 'Unverified'}
             </Badge>
           </div>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto" size="sm">
           <Link href={routes.creator.discoverCampaigns}>
             <Search className="mr-2 h-4 w-4" />
             Cari Campaign
@@ -61,7 +61,7 @@ export default function CreatorDashboardPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
         <StatCard
           label="Wallet Balance"
           value={`Rp ${walletBalance.toLocaleString('id-ID')}`}
@@ -85,10 +85,10 @@ export default function CreatorDashboardPage() {
       </div>
 
       {/* Recommended Campaigns */}
-      <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Rekomendasi Campaign untuk Kamu</h2>
-          <Button variant="ghost" size="sm" asChild>
+      <Card className="p-4 sm:p-6">
+        <div className="mb-3 flex flex-col gap-2 sm:mb-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-base font-semibold sm:text-lg">Rekomendasi Campaign untuk Kamu</h2>
+          <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
             <Link href={routes.creator.discoverCampaigns}>Lihat semua</Link>
           </Button>
         </div>
@@ -97,7 +97,7 @@ export default function CreatorDashboardPage() {
           title="Belum ada rekomendasi"
           description="Mulai dengan mencari campaign yang sesuai dengan profil Anda"
           action={
-            <Button asChild>
+            <Button asChild size="sm" className="w-full sm:w-auto">
               <Link href={routes.creator.discoverCampaigns}>Cari Campaign</Link>
             </Button>
           }

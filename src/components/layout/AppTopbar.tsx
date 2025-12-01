@@ -46,8 +46,8 @@ export function AppTopbar({ title }: AppTopbarProps) {
     .toUpperCase() || 'U';
 
   return (
-    <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b border-border bg-background px-6">
-      <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+    <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b border-border bg-background px-4 sm:px-6">
+      <Button variant="ghost" size="icon" onClick={toggleSidebar} className="hidden lg:flex">
         <Menu className="h-5 w-5" />
       </Button>
 

@@ -70,15 +70,15 @@ export function BrandProfileForm({ defaultValues, onCancel, onSuccess }: BrandPr
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Nama Brand / Toko *</Label>
-        <Input id="name" {...register('name')} disabled={updateProfile.isPending} />
-        {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+        <Label htmlFor="name" className="text-xs sm:text-sm">Nama Brand / Toko *</Label>
+        <Input id="name" {...register('name')} disabled={updateProfile.isPending} className="text-sm sm:text-base" />
+        {errors.name && <p className="text-xs text-destructive sm:text-sm">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="brandType">Tipe Brand *</Label>
+        <Label htmlFor="brandType" className="text-xs sm:text-sm">Tipe Brand *</Label>
         <select
           id="brandType"
           {...register('brandType')}
@@ -92,64 +92,66 @@ export function BrandProfileForm({ defaultValues, onCancel, onSuccess }: BrandPr
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="logoUrl">Logo URL (Opsional)</Label>
+        <Label htmlFor="logoUrl" className="text-xs sm:text-sm">Logo URL (Opsional)</Label>
         <Input
           id="logoUrl"
           type="url"
           {...register('logoUrl')}
           disabled={updateProfile.isPending}
+          className="text-sm sm:text-base"
         />
-        {errors.logoUrl && <p className="text-sm text-destructive">{errors.logoUrl.message}</p>}
+        {errors.logoUrl && <p className="text-xs text-destructive sm:text-sm">{errors.logoUrl.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bannerUrl">Banner URL (Opsional)</Label>
+        <Label htmlFor="bannerUrl" className="text-xs sm:text-sm">Banner URL (Opsional)</Label>
         <Input
           id="bannerUrl"
           type="url"
           {...register('bannerUrl')}
           disabled={updateProfile.isPending}
+          className="text-sm sm:text-base"
         />
         {errors.bannerUrl && (
-          <p className="text-sm text-destructive">{errors.bannerUrl.message}</p>
+          <p className="text-xs text-destructive sm:text-sm">{errors.bannerUrl.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Deskripsi (Opsional)</Label>
-        <Textarea id="description" {...register('description')} rows={4} disabled={updateProfile.isPending} />
+        <Label htmlFor="description" className="text-xs sm:text-sm">Deskripsi (Opsional)</Label>
+        <Textarea id="description" {...register('description')} rows={4} disabled={updateProfile.isPending} className="text-sm sm:text-base" />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="category">Kategori *</Label>
-        <Input id="category" {...register('category')} disabled={updateProfile.isPending} />
+        <Label htmlFor="category" className="text-xs sm:text-sm">Kategori *</Label>
+        <Input id="category" {...register('category')} disabled={updateProfile.isPending} className="text-sm sm:text-base" />
         {errors.category && (
-          <p className="text-sm text-destructive">{errors.category.message}</p>
+          <p className="text-xs text-destructive sm:text-sm">{errors.category.message}</p>
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 sm:gap-4">
         <div className="space-y-2">
-          <Label htmlFor="city">Kota *</Label>
-          <Input id="city" {...register('city')} disabled={updateProfile.isPending} />
-          {errors.city && <p className="text-sm text-destructive">{errors.city.message}</p>}
+          <Label htmlFor="city" className="text-xs sm:text-sm">Kota *</Label>
+          <Input id="city" {...register('city')} disabled={updateProfile.isPending} className="text-sm sm:text-base" />
+          {errors.city && <p className="text-xs text-destructive sm:text-sm">{errors.city.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="province">Provinsi *</Label>
-          <Input id="province" {...register('province')} disabled={updateProfile.isPending} />
+          <Label htmlFor="province" className="text-xs sm:text-sm">Provinsi *</Label>
+          <Input id="province" {...register('province')} disabled={updateProfile.isPending} className="text-sm sm:text-base" />
           {errors.province && (
-            <p className="text-sm text-destructive">{errors.province.message}</p>
+            <p className="text-xs text-destructive sm:text-sm">{errors.province.message}</p>
           )}
         </div>
       </div>
 
-      <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={updateProfile.isPending}>
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={updateProfile.isPending} className="w-full sm:w-auto" size="sm">
           <X className="mr-2 h-4 w-4" />
           Batal
         </Button>
-        <Button type="submit" disabled={updateProfile.isPending}>
+        <Button type="submit" disabled={updateProfile.isPending} className="w-full sm:w-auto" size="sm">
           {updateProfile.isPending ? 'Menyimpan...' : 'Simpan'}
         </Button>
       </div>

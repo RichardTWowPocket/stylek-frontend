@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNotifications } from '@/lib/hooks/useNotifications';
@@ -8,8 +9,10 @@ import { useMarkNotificationRead } from '@/lib/hooks/useNotifications';
 import { routes } from '@/lib/config/routes';
 import Link from 'next/link';
 import { cn } from '@/utils/cn';
+import type { Notification } from '@/lib/api/notifications';
 
 export function NotificationBell() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { data: notifications } = useNotifications({ page: 1, pageSize: 10 });
   const markRead = useMarkNotificationRead();
@@ -17,11 +20,16 @@ export function NotificationBell() {
   const unreadCount = notifications?.data?.filter((n) => !n.isRead).length || 0;
   const displayCount = unreadCount > 9 ? '9+' : unreadCount;
 
-  const handleNotificationClick = (id: string, isRead: boolean) => {
-    if (!isRead) {
-      markRead.mutate(id);
+  const handleNotificationClick = (notification: Notification) => {
+    if (!notification.isRead) {
+      markRead.mutate(notification.id);
     }
     setIsOpen(false);
+    
+    // Navigate to targetUrl if available
+    if (notification.data?.targetUrl) {
+      router.push(notification.data.targetUrl);
+    }
   };
 
   return (
@@ -61,9 +69,7 @@ export function NotificationBell() {
                   notifications.data.slice(0, 5).map((notification) => (
                     <div
                       key={notification.id}
-                      onClick={() =>
-                        handleNotificationClick(notification.id, notification.isRead)
-                      }
+                      onClick={() => handleNotificationClick(notification)}
                       className={cn(
                         'cursor-pointer rounded-lg p-3 transition-colors hover:bg-muted',
                         !notification.isRead && 'bg-muted/50'

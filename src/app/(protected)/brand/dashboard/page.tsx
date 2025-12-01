@@ -24,14 +24,14 @@ export default function BrandDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Memuat...</p>
+            <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
+            <p className="text-sm text-muted-foreground sm:text-base">Memuat...</p>
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -47,27 +47,28 @@ export default function BrandDashboardPage() {
   const pendingReviews = campaigns?.pendingReviewCount || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Hero Bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Halo, {brandName}</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">Halo, {brandName}</h1>
           <div className="mt-2">
             <Badge variant={verificationStatus === 'VERIFIED' ? 'default' : 'secondary'}>
               {verificationStatus === 'VERIFIED' ? 'Verified' : 'Unverified'}
             </Badge>
           </div>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href={routes.brand.campaigns + '/new'}>
             <Plus className="mr-2 h-4 w-4" />
-            Buat Campaign Baru
+            <span className="hidden sm:inline">Buat Campaign Baru</span>
+            <span className="sm:hidden">Buat Campaign</span>
           </Link>
         </Button>
       </div>
 
       {/* Stat Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         <StatCard
           label="Available Balance"
           value={`Rp ${availableBalance.toLocaleString('id-ID')}`}
@@ -91,11 +92,11 @@ export default function BrandDashboardPage() {
       </div>
 
       {/* Recent Campaigns */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Campaign Terbaru</h2>
-            <Button variant="ghost" size="sm" asChild>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card className="p-4 sm:p-6">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-base font-semibold sm:text-lg">Campaign Terbaru</h2>
+            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
               <Link href={routes.brand.campaigns}>Lihat semua</Link>
             </Button>
           </div>
@@ -104,13 +105,13 @@ export default function BrandDashboardPage() {
               {campaigns.recentCampaigns.slice(0, 5).map((campaign: any) => (
                 <div
                   key={campaign.id}
-                  className="flex items-center justify-between rounded-lg border border-border p-3"
+                  className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div>
-                    <p className="font-medium">{campaign.title}</p>
-                    <p className="text-sm text-muted-foreground">{campaign.status}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate font-medium text-sm sm:text-base">{campaign.title}</p>
+                    <p className="text-xs text-muted-foreground sm:text-sm">{campaign.status}</p>
                   </div>
-                  <Badge>{campaign.status}</Badge>
+                  <Badge className="w-fit">{campaign.status}</Badge>
                 </div>
               ))}
             </div>
@@ -120,7 +121,7 @@ export default function BrandDashboardPage() {
               title="Belum ada campaign"
               description="Mulai dengan membuat campaign pertama Anda"
               action={
-                <Button asChild>
+                <Button asChild size="sm">
                   <Link href={routes.brand.campaigns + '/new'}>Buat Campaign</Link>
                 </Button>
               }
@@ -128,27 +129,27 @@ export default function BrandDashboardPage() {
           )}
         </Card>
 
-        <Card className="p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Quick Actions</h2>
+        <Card className="p-4 sm:p-6">
+          <div className="mb-4">
+            <h2 className="text-base font-semibold sm:text-lg">Quick Actions</h2>
           </div>
           <div className="space-y-2">
-            <Button variant="outline" className="w-full justify-start" asChild>
+            <Button variant="outline" className="w-full justify-start" size="sm" asChild>
               <Link href={routes.brand.campaigns + '/new'}>
                 <Plus className="mr-2 h-4 w-4" />
-                Buat Campaign Baru
+                <span className="text-sm sm:text-base">Buat Campaign Baru</span>
               </Link>
             </Button>
-            <Button variant="outline" className="w-full justify-start" asChild>
+            <Button variant="outline" className="w-full justify-start" size="sm" asChild>
               <Link href={routes.brand.campaigns}>
                 <FileCheck className="mr-2 h-4 w-4" />
-                Lihat Applicants
+                <span className="text-sm sm:text-base">Lihat Applicants</span>
               </Link>
             </Button>
-            <Button variant="outline" className="w-full justify-start" asChild>
+            <Button variant="outline" className="w-full justify-start" size="sm" asChild>
               <Link href={routes.brand.wallet}>
                 <Wallet className="mr-2 h-4 w-4" />
-                Top-up Saldo
+                <span className="text-sm sm:text-base">Top-up Saldo</span>
               </Link>
             </Button>
           </div>

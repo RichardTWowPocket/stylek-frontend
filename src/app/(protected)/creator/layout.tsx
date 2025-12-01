@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { AppTopbar } from '@/components/layout/AppTopbar';
+import { AppBottomNav } from '@/components/layout/AppBottomNav';
 import { creatorNavItems } from '@/lib/config/nav';
 import { routes } from '@/lib/config/routes';
 import { useUiStore } from '@/store/ui.store';
@@ -38,9 +39,13 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
   return (
     <div className="flex min-h-screen">
       <AppSidebar items={creatorNavItems} />
-      <div className={cn('flex flex-1 flex-col transition-all', sidebarOpen && 'ml-64')}>
+      <div className={cn(
+        'flex flex-1 flex-col transition-all',
+        sidebarOpen && 'lg:ml-64'
+      )}>
         <AppTopbar />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 pb-20 lg:pb-6">{children}</main>
+        <AppBottomNav items={creatorNavItems} />
       </div>
     </div>
   );

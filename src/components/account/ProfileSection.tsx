@@ -50,13 +50,8 @@ export function ProfileSection() {
   }, [profile, reset]);
 
   const onSubmit = async (data: ProfileFormData) => {
-    try {
-      await updateProfile.mutateAsync(data);
-      toast.success('Profil berhasil diperbarui');
-      refetch();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Gagal memperbarui profil');
-    }
+    // Disabled - endpoint not available
+    toast.error('Fitur update profil akun belum tersedia. Silakan hubungi admin untuk perubahan.');
   };
 
   if (isLoading) {
@@ -74,54 +69,54 @@ export function ProfileSection() {
   }
 
   return (
-    <Card className="p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={session?.user?.email || ''}
-            disabled
-            className="bg-muted"
-          />
-          <p className="text-xs text-muted-foreground">
-            Email tidak dapat diubah untuk saat ini
-          </p>
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email" className="text-xs sm:text-sm">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          value={session?.user?.email || ''}
+          disabled
+          className="bg-muted text-sm sm:text-base"
+        />
+        <p className="text-xs text-muted-foreground">
+          Email tidak dapat diubah untuk saat ini
+        </p>
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="name">Nama</Label>
-          <Input
-            id="name"
-            {...register('name')}
-            disabled={updateProfile.isPending}
-          />
-          {errors.name && (
-            <p className="text-sm text-destructive">{errors.name.message}</p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="name" className="text-xs sm:text-sm">Nama</Label>
+        <Input
+          id="name"
+          {...register('name')}
+          disabled={true}
+          className="bg-muted text-sm sm:text-base"
+        />
+        <p className="text-xs text-muted-foreground">
+          Update profil akun belum tersedia. Silakan hubungi admin untuk perubahan.
+        </p>
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phoneNumber">Nomor HP</Label>
-          <Input
-            id="phoneNumber"
-            type="tel"
-            {...register('phoneNumber')}
-            disabled={updateProfile.isPending}
-          />
-          {errors.phoneNumber && (
-            <p className="text-sm text-destructive">{errors.phoneNumber.message}</p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="phoneNumber" className="text-xs sm:text-sm">Nomor HP</Label>
+        <Input
+          id="phoneNumber"
+          type="tel"
+          {...register('phoneNumber')}
+          disabled={true}
+          className="bg-muted text-sm sm:text-base"
+        />
+        <p className="text-xs text-muted-foreground">
+          Update profil akun belum tersedia. Silakan hubungi admin untuk perubahan.
+        </p>
+      </div>
 
-        <div className="flex justify-end">
-          <Button type="submit" disabled={updateProfile.isPending}>
-            {updateProfile.isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
-          </Button>
-        </div>
-      </form>
-    </Card>
+      <div className="flex justify-end">
+        <Button type="button" disabled={true} variant="outline" size="sm" className="w-full sm:w-auto">
+          Fitur belum tersedia
+        </Button>
+      </div>
+    </form>
   );
 }
 

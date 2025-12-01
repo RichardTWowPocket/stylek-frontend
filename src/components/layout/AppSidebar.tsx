@@ -24,6 +24,7 @@ export function AppSidebar({ items }: AppSidebarProps) {
     <aside
       className={cn(
         'fixed left-0 top-0 z-40 h-screen border-r border-border bg-background transition-transform',
+        'hidden lg:block',
         sidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full'
       )}
     >

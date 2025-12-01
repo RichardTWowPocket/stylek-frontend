@@ -22,7 +22,12 @@ export const campaignBasicInfoSchema = z.object({
 export const campaignProductSchema = z.object({
   productName: z.string().min(2, 'Nama produk minimal 2 karakter'),
   productImages: z.array(z.string().url('URL gambar tidak valid')).min(1, 'Minimal 1 gambar produk'),
-  productLink: z.string().url('URL tidak valid').optional().or(z.literal('')),
+  productLink: z
+    .string()
+    .refine((val) => val === '' || z.string().url().safeParse(val).success, {
+      message: 'URL tidak valid',
+    })
+    .optional(),
   normalPrice: z.number().min(0, 'Harga tidak valid').optional(),
 });
 
@@ -52,7 +57,16 @@ export const campaignDeliverablesSchema = z.object({
 // Step 4: Reward & Quota
 export const campaignRewardSchema = z.object({
   rewardType: z.enum(['FREE_PRODUCT', 'FREE_PRODUCT_PLUS_FEE', 'CASHBACK_AFTER_PURCHASE']),
-  feePerCreator: z.number().min(0, 'Fee tidak valid').optional(),
+  feePerCreator: z.preprocess(
+    (val) => {
+      // Convert NaN, empty string, null, or undefined to undefined
+      if (val === null || val === undefined || val === '' || (typeof val === 'number' && isNaN(val))) {
+        return undefined;
+      }
+      return typeof val === 'string' ? Number(val) : val;
+    },
+    z.number().min(0, 'Fee tidak valid').optional(),
+  ),
   estimatedProductValue: z.number().min(0, 'Nilai produk tidak valid').optional(),
   slots: z.number().min(1, 'Slots minimal 1'),
   eligibleRegions: z.array(z.string()).min(1, 'Pilih minimal 1 region'),
@@ -62,10 +76,20 @@ export const campaignRewardSchema = z.object({
 export const campaignTimelineSchema = z.object({
   applyStartDate: z.string().min(1, 'Tanggal mulai apply harus diisi'),
   applyEndDate: z.string().min(1, 'Tanggal akhir apply harus diisi'),
-  announcementDate: z.string().optional(),
+  announcementDate: z
+    .string()
+    .refine((val) => val === '' || !isNaN(Date.parse(val)), {
+      message: 'Tanggal tidak valid',
+    })
+    .optional(),
   postDeadline: z.string().min(1, 'Post deadline harus diisi'),
   requirePreApproval: z.boolean().default(false),
-  briefAttachmentUrl: z.string().url('URL tidak valid').optional().or(z.literal('')),
+  briefAttachmentUrl: z
+    .string()
+    .refine((val) => val === '' || z.string().url().safeParse(val).success, {
+      message: 'URL tidak valid',
+    })
+    .optional(),
 });
 
 // Combined schema for full campaign

@@ -2,17 +2,19 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
+import { LogOut } from 'lucide-react';
 import { useBrandOnboardingStore } from '@/store/brandOnboarding.store';
 import { BrandOnboardingStep1 } from '@/components/brand/BrandOnboardingStep1';
 import { BrandOnboardingStep2 } from '@/components/brand/BrandOnboardingStep2';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { routes } from '@/lib/config/routes';
 
 export default function BrandOnboardingPage() {
   const { step, setStep } = useBrandOnboardingStore();
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -37,6 +39,16 @@ export default function BrandOnboardingPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          onClick={() => signOut({ callbackUrl: routes.login })}
+          className="flex items-center gap-2"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </Button>
+      </div>
       {/* Stepper */}
       <Card className="p-6">
         <div className="flex items-center justify-between">
@@ -79,10 +91,15 @@ export default function BrandOnboardingPage() {
       {step === 2 && (
         <BrandOnboardingStep2
           onBack={() => setStep(1)}
-          onComplete={() => {
-            // After completing onboarding, refresh session and redirect to dashboard
-            // Force page reload to refresh session with updated hasProfile
-            window.location.href = routes.brand.dashboard;
+          onComplete={async () => {
+            // After completing onboarding, refresh session to update hasProfile
+            // This will trigger the JWT callback to fetch updated hasProfile from backend
+            await update();
+            
+            // Small delay to ensure session is updated before redirect
+            setTimeout(() => {
+              router.push(routes.brand.dashboard);
+            }, 100);
           }}
         />
       )}

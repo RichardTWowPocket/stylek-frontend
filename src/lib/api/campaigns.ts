@@ -60,7 +60,20 @@ export interface Campaign {
     id: string;
     name: string;
     logoUrl?: string;
+    bannerUrl?: string;
+    description?: string;
+    category?: string;
+    city?: string;
+    province?: string;
+    verifyStatus?: string;
+    channels?: Array<{
+      type: string;
+      label?: string;
+      url: string;
+    }>;
   };
+  applicationCount?: number;
+  acceptedCount?: number;
 }
 
 export interface GetBrandCampaignsParams {
@@ -129,6 +142,7 @@ export async function getBrandCampaigns(
   const res = await api.get<CampaignsResponse>('/brands/me/campaigns', {
     params: queryParams,
   });
+  
   return res.data;
 }
 
@@ -149,6 +163,211 @@ export async function updateCampaign(id: string, data: UpdateCampaignDto): Promi
 
 export async function publishCampaign(id: string): Promise<Campaign> {
   const res = await api.post<Campaign>(`/campaigns/${id}/publish`, {});
+  return res.data;
+}
+
+// Campaign Applications Types & APIs
+export type ApplicationStatus = 'APPLIED' | 'ACCEPTED' | 'REJECTED' | 'WAITLISTED';
+export type SocialPlatformType = 'INSTAGRAM' | 'TIKTOK' | 'YOUTUBE' | 'BLOG' | 'OTHER';
+
+export interface CreatorPlatform {
+  id: string;
+  type: SocialPlatformType;
+  handle: string;
+  profileUrl?: string;
+  followers?: number;
+  avgViews?: number;
+  avgLikes?: number;
+}
+
+export interface CreatorBasicInfo {
+  id: string;
+  displayName: string;
+  avatarUrl?: string;
+  city?: string;
+  province?: string;
+  mainNiche?: string;
+  additionalNiches?: string[];
+  platforms?: CreatorPlatform[];
+}
+
+export interface CampaignApplication {
+  id: string;
+  status: ApplicationStatus;
+  selectedPlatform: SocialPlatformType;
+  selectedPlatformHandle?: string;
+  applyNote?: string;
+  sampleContentUrls?: string[];
+  createdAt: string;
+  updatedAt: string;
+  creator: CreatorBasicInfo;
+}
+
+export interface GetCampaignApplicationsParams {
+  status?: ApplicationStatus;
+  search?: string;
+  platform?: SocialPlatformType;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface CampaignApplicationsResponse {
+  data: CampaignApplication[];
+  total: number;
+  page: number;
+  pageSize: number;
+  summary?: {
+    total: number;
+    applied: number;
+    accepted: number;
+    rejected: number;
+    waitlisted: number;
+  };
+}
+
+export async function getCampaignApplications(
+  campaignId: string,
+  params: GetCampaignApplicationsParams = {}
+): Promise<CampaignApplicationsResponse> {
+  const { status, search, platform, page = 1, pageSize = 20 } = params;
+  const queryParams: Record<string, string | number> = {
+    page,
+    pageSize,
+  };
+
+  if (status) {
+    queryParams.status = status;
+  }
+
+  if (search) {
+    queryParams.search = search;
+  }
+
+  if (platform) {
+    queryParams.platform = platform;
+  }
+
+  const res = await api.get<CampaignApplicationsResponse>(
+    `/campaigns/${campaignId}/applications`,
+    { params: queryParams }
+  );
+  return res.data;
+}
+
+export async function acceptApplication(campaignId: string, applicationId: string): Promise<void> {
+  await api.post(`/campaigns/${campaignId}/applications/${applicationId}/accept`);
+}
+
+export async function rejectApplication(campaignId: string, applicationId: string): Promise<void> {
+  await api.post(`/campaigns/${campaignId}/applications/${applicationId}/reject`);
+}
+
+export async function waitlistApplication(campaignId: string, applicationId: string): Promise<void> {
+  await api.post(`/campaigns/${campaignId}/applications/${applicationId}/waitlist`);
+}
+
+// Discover Campaigns Types & APIs
+export interface DiscoverCampaignsParams {
+  search?: string;
+  category?: string;
+  location?: string;
+  city?: string;
+  province?: string;
+  platform?: DeliverableType;
+  rewardType?: RewardType;
+  campaignType?: CampaignType;
+  promoType?: PromoType;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function discoverCampaigns(
+  params: DiscoverCampaignsParams = {}
+): Promise<CampaignsResponse> {
+  const { page = 1, pageSize = 20, ...filters } = params;
+  const queryParams: Record<string, string | number> = {
+    page,
+    pageSize,
+  };
+
+  // Add filters only if they have values
+  if (filters.search) queryParams.search = filters.search;
+  if (filters.category) queryParams.category = filters.category;
+  if (filters.location) queryParams.location = filters.location;
+  if (filters.city) queryParams.city = filters.city;
+  if (filters.province) queryParams.province = filters.province;
+  if (filters.platform) queryParams.platform = filters.platform;
+  if (filters.rewardType) queryParams.rewardType = filters.rewardType;
+  if (filters.campaignType) queryParams.campaignType = filters.campaignType;
+  if (filters.promoType) queryParams.promoType = filters.promoType;
+
+  const res = await api.get<CampaignsResponse>('/campaigns', {
+    params: queryParams,
+  });
+  return res.data;
+}
+
+export interface ApplyCampaignDto {
+  selectedPlatform: SocialPlatformType;
+  selectedPlatformHandle?: string;
+  applyNote?: string;
+  sampleContentUrls?: string[];
+}
+
+export async function applyToCampaign(
+  campaignId: string,
+  data: ApplyCampaignDto
+): Promise<void> {
+  await api.post(`/campaigns/${campaignId}/applications`, data);
+}
+
+// Creator My Campaigns Types & APIs
+export interface CreatorApplication {
+  id: string;
+  status: ApplicationStatus;
+  selectedPlatform: SocialPlatformType;
+  selectedPlatformHandle?: string;
+  applyNote?: string;
+  sampleContentUrls?: string[];
+  createdAt: string;
+  updatedAt: string;
+  campaign: Campaign;
+  tasks: Array<{
+    id: string;
+    status: string;
+    deliverableType: DeliverableType;
+  }>;
+}
+
+export interface GetCreatorApplicationsParams {
+  status?: ApplicationStatus;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface CreatorApplicationsResponse {
+  data: CreatorApplication[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export async function getCreatorApplications(
+  params: GetCreatorApplicationsParams = {}
+): Promise<CreatorApplicationsResponse> {
+  const { status, page = 1, pageSize = 20 } = params;
+  const queryParams: Record<string, string | number> = {
+    page,
+    pageSize,
+  };
+
+  if (status) {
+    queryParams.status = status;
+  }
+
+  const res = await api.get<CreatorApplicationsResponse>('/creators/me/applications', {
+    params: queryParams,
+  });
   return res.data;
 }
 

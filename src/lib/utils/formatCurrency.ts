@@ -6,3 +6,7 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
+export function formatIDRCurrency(amount: number): string {
+  return formatCurrency(amount);
+}
+

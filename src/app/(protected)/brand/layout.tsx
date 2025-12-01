@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { AppTopbar } from '@/components/layout/AppTopbar';
+import { AppBottomNav } from '@/components/layout/AppBottomNav';
 import { BrandProfileGate } from '@/components/brand/BrandProfileGate';
 import { brandNavItems } from '@/lib/config/nav';
 import { routes } from '@/lib/config/routes';
@@ -43,15 +44,19 @@ export default function BrandLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen">
       {!isOnboardingPage && <AppSidebar items={brandNavItems} />}
-      <div className={cn('flex flex-1 flex-col transition-all', sidebarOpen && !isOnboardingPage && 'ml-64')}>
+      <div className={cn(
+        'flex flex-1 flex-col transition-all',
+        sidebarOpen && !isOnboardingPage && 'lg:ml-64'
+      )}>
         {!isOnboardingPage && <AppTopbar />}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 sm:p-6 pb-20 lg:pb-6">
           {isOnboardingPage ? (
             children
           ) : (
             <BrandProfileGate>{children}</BrandProfileGate>
           )}
         </main>
+        {!isOnboardingPage && <AppBottomNav items={brandNavItems} />}
       </div>
     </div>
   );

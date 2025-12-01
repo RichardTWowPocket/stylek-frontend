@@ -41,18 +41,18 @@ export default function BrandProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Profil Brand</h1>
-        <p className="text-muted-foreground">Kelola informasi brand dan channels Anda</p>
+        <h1 className="text-xl font-bold sm:text-2xl">Profil Brand</h1>
+        <p className="text-sm text-muted-foreground sm:text-base">Kelola informasi brand dan channels Anda</p>
       </div>
 
       {/* Profile Card */}
-      <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Informasi Brand</h2>
+      <Card className="p-4 sm:p-6">
+        <div className="mb-3 flex flex-col gap-2 sm:mb-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-base font-semibold sm:text-lg">Informasi Brand</h2>
           {!isEditingProfile && (
-            <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(true)}>
+            <Button variant="outline" size="sm" onClick={() => setIsEditingProfile(true)} className="w-full sm:w-auto">
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
@@ -69,23 +69,23 @@ export default function BrandProfilePage() {
             }}
           />
         ) : (
-          <div className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 sm:gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Nama Brand</p>
-                <p className="font-medium">{profile.name}</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">Nama Brand</p>
+                <p className="font-medium text-sm sm:text-base">{profile.name}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Tipe Brand</p>
-                <p className="font-medium">{profile.brandType}</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">Tipe Brand</p>
+                <p className="font-medium text-sm sm:text-base">{profile.brandType}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Kategori</p>
-                <p className="font-medium">{profile.category || '-'}</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">Kategori</p>
+                <p className="font-medium text-sm sm:text-base">{profile.category || '-'}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Lokasi</p>
-                <p className="font-medium">
+                <p className="text-xs text-muted-foreground sm:text-sm">Lokasi</p>
+                <p className="font-medium text-sm sm:text-base">
                   {profile.city && profile.province
                     ? `${profile.city}, ${profile.province}`
                     : '-'}
@@ -94,13 +94,13 @@ export default function BrandProfilePage() {
             </div>
             {profile.description && (
               <div>
-                <p className="text-sm text-muted-foreground">Deskripsi</p>
-                <p className="text-sm">{profile.description}</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">Deskripsi</p>
+                <p className="text-xs sm:text-sm">{profile.description}</p>
               </div>
             )}
             <div>
-              <p className="text-sm text-muted-foreground">Status Verifikasi</p>
-              <Badge variant={profile.verifyStatus === 'VERIFIED' ? 'default' : 'secondary'}>
+              <p className="text-xs text-muted-foreground sm:text-sm">Status Verifikasi</p>
+              <Badge variant={profile.verifyStatus === 'VERIFIED' ? 'default' : 'secondary'} className="text-xs mt-1">
                 {profile.verifyStatus === 'VERIFIED' ? 'Verified' : 'Unverified'}
               </Badge>
             </div>
@@ -109,11 +109,11 @@ export default function BrandProfilePage() {
       </Card>
 
       {/* Channels Card */}
-      <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Channels</h2>
+      <Card className="p-4 sm:p-6">
+        <div className="mb-3 flex flex-col gap-2 sm:mb-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-base font-semibold sm:text-lg">Channels</h2>
           {!isEditingChannels && (
-            <Button variant="outline" size="sm" onClick={() => setIsEditingChannels(true)}>
+            <Button variant="outline" size="sm" onClick={() => setIsEditingChannels(true)} className="w-full sm:w-auto">
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
@@ -136,18 +136,18 @@ export default function BrandProfilePage() {
                 {profile.channels.map((channel) => (
                   <div
                     key={channel.id}
-                    className="flex items-center justify-between rounded-lg border border-border p-3"
+                    className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
                   >
-                    <div>
-                      <p className="font-medium">{channel.type}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm sm:text-base">{channel.type}</p>
                       {channel.label && (
-                        <p className="text-sm text-muted-foreground">{channel.label}</p>
+                        <p className="text-xs text-muted-foreground sm:text-sm">{channel.label}</p>
                       )}
                       <a
                         href={channel.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline"
+                        className="text-xs text-primary hover:underline break-all sm:text-sm"
                       >
                         {channel.url}
                       </a>
@@ -156,7 +156,7 @@ export default function BrandProfilePage() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Belum ada channel</p>
+              <p className="text-xs text-muted-foreground sm:text-sm">Belum ada channel</p>
             )}
           </div>
         )}

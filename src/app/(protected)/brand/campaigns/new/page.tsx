@@ -12,11 +12,30 @@ export default function CreateCampaignPage() {
 
   const handleSubmit = async (data: CreateCampaignFormData) => {
     try {
-      const campaign = await createCampaign(data);
+      // Transform empty strings to undefined for optional fields
+      // Convert datetime-local format to ISO 8601 format for dates
+      const payload = {
+        ...data,
+        productLink: data.productLink && data.productLink.trim() !== '' ? data.productLink : undefined,
+        announcementDate: data.announcementDate && data.announcementDate.trim() !== '' 
+          ? new Date(data.announcementDate).toISOString() 
+          : undefined,
+        briefAttachmentUrl: data.briefAttachmentUrl && data.briefAttachmentUrl.trim() !== '' 
+          ? data.briefAttachmentUrl 
+          : undefined,
+        // Convert required dates from datetime-local to ISO 8601
+        applyStartDate: new Date(data.applyStartDate).toISOString(),
+        applyEndDate: new Date(data.applyEndDate).toISOString(),
+        postDeadline: new Date(data.postDeadline).toISOString(),
+      };
+      
+      const campaign = await createCampaign(payload);
       toast.success('Campaign berhasil dibuat');
       router.push(routes.brand.campaignDetail(campaign.id));
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Gagal membuat campaign');
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Gagal membuat campaign';
+      toast.error(errorMessage);
+      console.error('Campaign creation error:', err.response?.data);
     }
   };
 

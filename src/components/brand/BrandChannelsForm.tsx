@@ -83,23 +83,23 @@ export function BrandChannelsForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {fields.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-8 text-center">
-            <p className="mb-4 text-muted-foreground">Belum ada channel</p>
-            <Button type="button" variant="outline" onClick={addChannel}>
+          <div className="rounded-lg border border-dashed border-border p-6 text-center sm:p-8">
+            <p className="mb-3 text-sm text-muted-foreground sm:mb-4 sm:text-base">Belum ada channel</p>
+            <Button type="button" variant="outline" onClick={addChannel} size="sm">
               <Plus className="mr-2 h-4 w-4" />
               Tambah Channel
             </Button>
           </div>
         ) : (
           fields.map((field, index) => (
-            <div key={field.id} className="rounded-lg border border-border p-4">
-              <div className="flex items-start gap-4">
-                <div className="flex-1 space-y-4">
+            <div key={field.id} className="rounded-lg border border-border p-3 sm:p-4">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="flex-1 space-y-3 sm:space-y-4">
                   <div className="space-y-2">
-                    <Label>Tipe Channel</Label>
+                    <Label className="text-xs sm:text-sm">Tipe Channel</Label>
                     <select
                       {...register(`channels.${index}.type`)}
                       className="flex h-10 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
@@ -115,22 +115,24 @@ export function BrandChannelsForm({
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Label (Opsional)</Label>
+                    <Label className="text-xs sm:text-sm">Label (Opsional)</Label>
                     <Input
                       {...register(`channels.${index}.label`)}
                       disabled={updateChannels.isPending}
+                      className="text-sm sm:text-base"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label>URL *</Label>
+                    <Label className="text-xs sm:text-sm">URL *</Label>
                     <Input
                       {...register(`channels.${index}.url`)}
                       type="url"
                       disabled={updateChannels.isPending}
+                      className="text-sm sm:text-base"
                     />
                     {errors.channels?.[index]?.url && (
-                      <p className="text-sm text-destructive">
+                      <p className="text-xs text-destructive sm:text-sm">
                         {errors.channels[index]?.url?.message}
                       </p>
                     )}
@@ -143,6 +145,7 @@ export function BrandChannelsForm({
                   size="icon"
                   onClick={() => remove(index)}
                   disabled={updateChannels.isPending}
+                  className="flex-shrink-0"
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
@@ -152,20 +155,20 @@ export function BrandChannelsForm({
         )}
       </div>
 
-      {errors.channels && <p className="text-sm text-destructive">{errors.channels.message}</p>}
+      {errors.channels && <p className="text-xs text-destructive sm:text-sm">{errors.channels.message}</p>}
 
-      <div className="flex items-center justify-between">
-        <Button type="button" variant="outline" onClick={addChannel} disabled={updateChannels.isPending}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Button type="button" variant="outline" onClick={addChannel} disabled={updateChannels.isPending} className="w-full sm:w-auto" size="sm">
           <Plus className="mr-2 h-4 w-4" />
           Tambah Channel
         </Button>
 
-        <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={updateChannels.isPending}>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button type="button" variant="outline" onClick={onCancel} disabled={updateChannels.isPending} className="w-full sm:w-auto" size="sm">
             <X className="mr-2 h-4 w-4" />
             Batal
           </Button>
-          <Button type="submit" disabled={updateChannels.isPending}>
+          <Button type="submit" disabled={updateChannels.isPending} className="w-full sm:w-auto" size="sm">
             {updateChannels.isPending ? 'Menyimpan...' : 'Simpan'}
           </Button>
         </div>

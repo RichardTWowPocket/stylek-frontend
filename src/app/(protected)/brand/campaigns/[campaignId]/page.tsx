@@ -13,6 +13,8 @@ import { toast } from '@/lib/ui/toast';
 import { routes } from '@/lib/config/routes';
 import { Edit, Send, AlertCircle } from 'lucide-react';
 import { CampaignOverview } from '@/components/brand/CampaignOverview';
+import { BrandCampaignApplicantsTab } from '@/components/brand/BrandCampaignApplicantsTab';
+import { BrandCampaignContentTab } from '@/components/brand/BrandCampaignContentTab';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -89,26 +91,33 @@ export default function CampaignDetailPage() {
   const canEdit = campaign.status === 'DRAFT' || campaign.status === 'OPEN';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">{campaign.title}</h1>
-            <Badge variant={getStatusBadgeVariant(campaign.status)}>{campaign.status}</Badge>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold break-words">{campaign.title}</h1>
+            <Badge variant={getStatusBadgeVariant(campaign.status)} className="flex-shrink-0">{campaign.status}</Badge>
           </div>
-          <p className="text-muted-foreground">Detail campaign</p>
+          <p className="text-sm sm:text-base text-muted-foreground">Detail campaign</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
           {canEdit && (
-            <Button variant="outline" onClick={() => router.push(routes.brand.campaignEdit(campaignId))}>
-              <Edit className="mr-2 h-4 w-4" />
+            <Button 
+              variant="outline" 
+              onClick={() => router.push(routes.brand.campaignEdit(campaignId))}
+              className="w-full sm:w-auto text-sm"
+            >
+              <Edit className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Edit
             </Button>
           )}
           {campaign.status === 'DRAFT' && (
-            <Button onClick={() => setShowPublishDialog(true)}>
-              <Send className="mr-2 h-4 w-4" />
+            <Button 
+              onClick={() => setShowPublishDialog(true)}
+              className="w-full sm:w-auto text-sm"
+            >
+              <Send className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Publish Campaign
             </Button>
           )}
@@ -119,12 +128,8 @@ export default function CampaignDetailPage() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="applicants" disabled>
-            Applicants (Phase 4)
-          </TabsTrigger>
-          <TabsTrigger value="content" disabled>
-            Content (Phase 4)
-          </TabsTrigger>
+          <TabsTrigger value="applicants">Applicants</TabsTrigger>
+          <TabsTrigger value="content">Content</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -132,15 +137,11 @@ export default function CampaignDetailPage() {
         </TabsContent>
 
         <TabsContent value="applicants">
-          <Card className="p-6">
-            <p className="text-muted-foreground">Applicants tab akan tersedia di Phase 4</p>
-          </Card>
+          <BrandCampaignApplicantsTab campaignId={campaignId} />
         </TabsContent>
 
         <TabsContent value="content">
-          <Card className="p-6">
-            <p className="text-muted-foreground">Content tab akan tersedia di Phase 4</p>
-          </Card>
+          <BrandCampaignContentTab campaignId={campaignId} />
         </TabsContent>
       </Tabs>
 

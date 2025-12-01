@@ -35,9 +35,30 @@ export function BrandCampaignForm({ mode, defaultValues, onSubmit }: BrandCampai
       goals: [],
       requiredHashtags: [],
       requiredMentions: [],
+      feePerCreator: undefined,
+      estimatedProductValue: undefined,
     },
     mode: 'onChange',
   });
+
+  // Debug logging - only log when on step 5 and form state changes
+  if (currentStep === 5) {
+    console.log('[Campaign Form Debug] Current step:', currentStep);
+    console.log('[Campaign Form Debug] Form state:', {
+      isSubmitting: form.formState.isSubmitting,
+      isValid: form.formState.isValid,
+      errors: form.formState.errors,
+    });
+    console.log('[Campaign Form Debug] Form values:', form.getValues());
+    
+    // Log specific validation errors
+    if (form.formState.errors && Object.keys(form.formState.errors).length > 0) {
+      console.error('[Campaign Form Debug] Validation Errors:', form.formState.errors);
+      Object.entries(form.formState.errors).forEach(([field, error]) => {
+        console.error(`[Campaign Form Debug] Field "${field}":`, error);
+      });
+    }
+  }
 
   const handleNext = async () => {
     // Validate current step before moving forward
@@ -76,7 +97,34 @@ export function BrandCampaignForm({ mode, defaultValues, onSubmit }: BrandCampai
   };
 
   const handleSubmit = async (data: CreateCampaignFormData) => {
-    await onSubmit(data);
+    // Validate all fields before submitting
+    const isValid = await form.trigger();
+    console.log('[Campaign Form Debug] Form submitted with data:', data);
+    console.log('[Campaign Form Debug] Form validation state:', {
+      isValid,
+      errors: form.formState.errors,
+    });
+    
+    if (!isValid) {
+      console.error('[Campaign Form Debug] Form is invalid, cannot submit');
+      console.error('[Campaign Form Debug] Validation errors:', form.formState.errors);
+      // Scroll to first error
+      const firstErrorField = Object.keys(form.formState.errors)[0];
+      if (firstErrorField) {
+        const element = document.querySelector(`[name="${firstErrorField}"]`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      return;
+    }
+    
+    try {
+      await onSubmit(data);
+    } catch (error) {
+      console.error('[Campaign Form Debug] Submit error:', error);
+      throw error;
+    }
   };
 
   return (
@@ -137,7 +185,19 @@ export function BrandCampaignForm({ mode, defaultValues, onSubmit }: BrandCampai
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
-          <Button type="submit" disabled={form.formState.isSubmitting}>
+          <Button 
+            type="submit" 
+            disabled={form.formState.isSubmitting}
+            onClick={() => {
+              console.log('[Campaign Form Debug] Submit button clicked');
+              console.log('[Campaign Form Debug] Form state:', {
+                isSubmitting: form.formState.isSubmitting,
+                isValid: form.formState.isValid,
+                errors: form.formState.errors,
+                currentStep,
+              });
+            }}
+          >
             {form.formState.isSubmitting ? 'Menyimpan...' : mode === 'create' ? 'Buat Campaign' : 'Simpan Perubahan'}
           </Button>
         )}

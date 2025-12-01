@@ -26,14 +26,46 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already authenticated
+  // Check for OAuth errors in URL
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.role) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorParam = urlParams.get('error');
+    
+    if (errorParam) {
+      // Clean up the URL but keep error state
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('error');
+      newUrl.searchParams.delete('callbackUrl');
+      window.history.replaceState({}, '', newUrl.pathname + newUrl.search);
+      
+      // Set appropriate error message based on error type
+      if (errorParam === 'OAuthCallback') {
+        setError('Gagal melakukan autentikasi dengan Google. Silakan coba lagi atau gunakan email dan password.');
+      } else if (errorParam === 'OAuthSignin') {
+        setError('Gagal memulai proses autentikasi dengan Google. Silakan coba lagi.');
+      } else if (errorParam === 'OAuthCreateAccount') {
+        setError('Gagal membuat akun. Silakan coba lagi atau gunakan email dan password.');
+      } else {
+        setError('Terjadi kesalahan saat autentikasi. Silakan coba lagi.');
+      }
+    }
+  }, []);
+
+  // Redirect if already authenticated (but not if there's an error)
+  useEffect(() => {
+    // Don't redirect if there's an OAuth error
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasError = urlParams.get('error');
+    
+    if (status === 'authenticated' && session?.user?.role && !hasError) {
       const role = session.user.role;
       const hasProfile = session.hasProfile ?? 0;
+
+      console.log('session', session);
+      console.log('role', role);
+      console.log('hasProfile', hasProfile);
       
       // Check if there's a callbackUrl from OAuth redirect
-      const urlParams = new URLSearchParams(window.location.search);
       const callbackUrl = urlParams.get('callbackUrl');
       
       // Small delay to ensure session is fully loaded

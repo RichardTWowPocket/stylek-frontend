@@ -3,7 +3,7 @@ import { getAdminSummary } from '@/lib/api/admin';
 
 export function useAdminSummary() {
   return useQuery({
-    queryKey: ['admin', 'summary'],
+    queryKey: ['admin', 'dashboard', 'summary'],
     queryFn: getAdminSummary,
   });
 }

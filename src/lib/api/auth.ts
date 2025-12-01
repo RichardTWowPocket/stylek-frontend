@@ -43,7 +43,7 @@ export interface CompleteBrandProfileDto {
 
 export interface CompleteCreatorProfileDto {
   displayName: string;
-  creatorType?: 'INDIVIDUAL' | 'AGENCY';
+  creatorType?: 'INDIVIDUAL' | 'AGENCY_CREATOR';
   bio?: string;
   mainNiche?: string;
   city?: string;

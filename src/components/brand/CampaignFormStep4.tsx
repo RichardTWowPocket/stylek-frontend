@@ -40,6 +40,13 @@ export function CampaignFormStep4({ form }: CampaignFormStep4Props) {
   const eligibleRegions = watch('eligibleRegions') || [];
   const [regionInput, setRegionInput] = React.useState('');
 
+  // Clear feePerCreator when rewardType doesn't require it
+  React.useEffect(() => {
+    if (rewardType === 'FREE_PRODUCT') {
+      setValue('feePerCreator', undefined, { shouldValidate: false });
+    }
+  }, [rewardType, setValue]);
+
   const addRegion = () => {
     if (regionInput.trim() && !eligibleRegions.includes(regionInput.trim())) {
       setValue('eligibleRegions', [...eligibleRegions, regionInput.trim()]);
@@ -112,10 +119,32 @@ export function CampaignFormStep4({ form }: CampaignFormStep4Props) {
             <Label htmlFor="feePerCreator">Fee per Creator (Rupiah) *</Label>
             <Input
               id="feePerCreator"
-              {...register('feePerCreator', { valueAsNumber: true })}
               type="number"
               min={0}
+              step="1000"
               placeholder="50000"
+              {...register('feePerCreator', {
+                valueAsNumber: true,
+                validate: (value) => {
+                  // If field is shown, it must be a valid number > 0
+                  if (value === undefined || value === null || (typeof value === 'number' && isNaN(value)) || Number(value) <= 0) {
+                    return 'Fee harus diisi dan lebih besar dari 0';
+                  }
+                  return true;
+                },
+                onChange: (e) => {
+                  // Convert empty string to undefined to avoid NaN
+                  const val = e.target.value;
+                  if (val === '' || val === null || val === undefined) {
+                    setValue('feePerCreator', undefined, { shouldValidate: true });
+                  } else {
+                    const numVal = Number(val);
+                    if (!isNaN(numVal) && numVal > 0) {
+                      setValue('feePerCreator', numVal, { shouldValidate: true });
+                    }
+                  }
+                },
+              })}
             />
             {errors.feePerCreator && (
               <p className="text-sm text-destructive">{errors.feePerCreator.message}</p>

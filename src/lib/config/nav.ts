@@ -20,6 +20,7 @@ import { SidebarItem } from '@/components/layout/AppSidebar';
 export const brandNavItems: SidebarItem[] = [
   { icon: Dashboard, label: 'Dashboard', href: routes.brand.dashboard },
   { icon: FolderKanban, label: 'Campaigns', href: routes.brand.campaigns },
+  { icon: Users, label: 'Cari Creator', href: routes.brand.creators },
   { icon: Wallet, label: 'Wallet', href: routes.brand.wallet },
   { icon: User, label: 'Profile', href: routes.brand.profile },
   { icon: Shield, label: 'Verification', href: routes.brand.verification },

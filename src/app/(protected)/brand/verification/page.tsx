@@ -75,25 +75,25 @@ export default function BrandVerificationPage() {
   const hasRejectedReason = !!profile.verifyRejectedReason;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Verifikasi Brand</h1>
-        <p className="text-muted-foreground">Ajukan verifikasi untuk meningkatkan kredibilitas brand Anda</p>
+        <h1 className="text-xl font-bold sm:text-2xl">Verifikasi Brand</h1>
+        <p className="text-sm text-muted-foreground sm:text-base">Ajukan verifikasi untuk meningkatkan kredibilitas brand Anda</p>
       </div>
 
       {isVerified ? (
-        <Card className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="rounded-full bg-success/10 p-3">
-              <CheckCircle2 className="h-8 w-8 text-success" />
+        <Card className="p-4 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <div className="rounded-full bg-success/10 p-2 flex-shrink-0 sm:p-3">
+              <CheckCircle2 className="h-6 w-6 text-success sm:h-8 sm:w-8" />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold">Brand Anda Sudah Terverifikasi</h2>
-              <p className="text-sm text-muted-foreground">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base font-semibold sm:text-lg">Brand Anda Sudah Terverifikasi</h2>
+              <p className="text-xs text-muted-foreground sm:text-sm">
                 Brand Anda telah diverifikasi dan dapat menggunakan fitur-fitur premium.
               </p>
             </div>
-            <Badge variant="default" className="ml-auto">
+            <Badge variant="default" className="w-fit text-xs sm:text-sm">
               Verified
             </Badge>
           </div>
@@ -101,9 +101,9 @@ export default function BrandVerificationPage() {
       ) : (
         <>
           {/* Benefits Card */}
-          <Card className="p-6">
-            <h2 className="mb-4 text-lg font-semibold">Manfaat Brand Terverifikasi</h2>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <Card className="p-4 sm:p-6">
+            <h2 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">Manfaat Brand Terverifikasi</h2>
+            <ul className="space-y-2 text-xs text-muted-foreground sm:text-sm">
               <li>• Meningkatkan kredibilitas di mata creator</li>
               <li>• Prioritas dalam pencarian campaign</li>
               <li>• Badge verified di profil brand</li>
@@ -113,12 +113,12 @@ export default function BrandVerificationPage() {
 
           {/* Rejection Reason */}
           {hasRejectedReason && (
-            <Card className="border-destructive p-6">
-              <div className="flex items-start gap-4">
-                <AlertCircle className="h-5 w-5 text-destructive" />
-                <div className="flex-1">
-                  <h3 className="mb-2 font-semibold text-destructive">Verifikasi Ditolak</h3>
-                  <p className="text-sm">{profile.verifyRejectedReason}</p>
+            <Card className="border-destructive p-4 sm:p-6">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0 sm:h-5 sm:w-5" />
+                <div className="flex-1 min-w-0">
+                  <h3 className="mb-2 text-sm font-semibold text-destructive sm:text-base">Verifikasi Ditolak</h3>
+                  <p className="text-xs sm:text-sm">{profile.verifyRejectedReason}</p>
                   <p className="mt-2 text-xs text-muted-foreground">
                     Silakan perbaiki dokumen dan ajukan ulang.
                   </p>
@@ -128,11 +128,11 @@ export default function BrandVerificationPage() {
           )}
 
           {/* Verification Form */}
-          <Card className="p-6">
-            <h2 className="mb-4 text-lg font-semibold">Upload Dokumen Verifikasi</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Card className="p-4 sm:p-6">
+            <h2 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">Upload Dokumen Verifikasi</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="documentUrl">URL Dokumen *</Label>
+                <Label htmlFor="documentUrl" className="text-xs sm:text-sm">URL Dokumen *</Label>
                 <p className="text-xs text-muted-foreground mb-2">
                   Upload dokumen (NPWP/NIB/SIUP) ke Google Drive atau platform penyimpanan lainnya,
                   lalu masukkan URL di sini
@@ -143,25 +143,27 @@ export default function BrandVerificationPage() {
                   {...register('documentUrl')}
                   placeholder="https://drive.google.com/file/d/..."
                   disabled={isSubmitting}
+                  className="text-sm sm:text-base"
                 />
                 {errors.documentUrl && (
-                  <p className="text-sm text-destructive">{errors.documentUrl.message}</p>
+                  <p className="text-xs text-destructive sm:text-sm">{errors.documentUrl.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes">Catatan Tambahan (Opsional)</Label>
+                <Label htmlFor="notes" className="text-xs sm:text-sm">Catatan Tambahan (Opsional)</Label>
                 <Textarea
                   id="notes"
                   {...register('notes')}
                   placeholder="Tambahkan catatan atau informasi tambahan..."
                   rows={4}
                   disabled={isSubmitting}
+                  className="text-sm sm:text-base"
                 />
               </div>
 
               <div className="flex justify-end">
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto" size="sm">
                   <Upload className="mr-2 h-4 w-4" />
                   {isSubmitting ? 'Mengirim...' : 'Ajukan Verifikasi'}
                 </Button>

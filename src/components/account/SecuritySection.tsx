@@ -36,69 +36,60 @@ export function SecuritySection() {
   });
 
   const onSubmit = async (data: ChangePasswordFormData) => {
-    try {
-      await changePassword.mutateAsync({
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-      });
-      toast.success('Password berhasil diubah');
-      reset();
-    } catch (err: any) {
-      toast.error(
-        err.response?.data?.message || 'Gagal mengubah password. Periksa password saat ini.'
-      );
-    }
+    // Disabled - endpoint not available
+    toast.error('Fitur ubah password belum tersedia. Silakan hubungi admin untuk perubahan.');
   };
 
   return (
-    <Card className="p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="currentPassword">Password Saat Ini</Label>
-          <Input
-            id="currentPassword"
-            type="password"
-            {...register('currentPassword')}
-            disabled={changePassword.isPending}
-          />
-          {errors.currentPassword && (
-            <p className="text-sm text-destructive">{errors.currentPassword.message}</p>
-          )}
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="currentPassword" className="text-xs sm:text-sm">Password Saat Ini</Label>
+        <Input
+          id="currentPassword"
+          type="password"
+          {...register('currentPassword')}
+          disabled={changePassword.isPending}
+          className="text-sm sm:text-base"
+        />
+        {errors.currentPassword && (
+          <p className="text-xs text-destructive sm:text-sm">{errors.currentPassword.message}</p>
+        )}
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="newPassword">Password Baru</Label>
-          <Input
-            id="newPassword"
-            type="password"
-            {...register('newPassword')}
-            disabled={changePassword.isPending}
-          />
-          {errors.newPassword && (
-            <p className="text-sm text-destructive">{errors.newPassword.message}</p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="newPassword" className="text-xs sm:text-sm">Password Baru</Label>
+        <Input
+          id="newPassword"
+          type="password"
+          {...register('newPassword')}
+          disabled={changePassword.isPending}
+          className="text-sm sm:text-base"
+        />
+        {errors.newPassword && (
+          <p className="text-xs text-destructive sm:text-sm">{errors.newPassword.message}</p>
+        )}
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Konfirmasi Password Baru</Label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            {...register('confirmPassword')}
-            disabled={changePassword.isPending}
-          />
-          {errors.confirmPassword && (
-            <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
-          )}
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword" className="text-xs sm:text-sm">Konfirmasi Password Baru</Label>
+        <Input
+          id="confirmPassword"
+          type="password"
+          {...register('confirmPassword')}
+          disabled={changePassword.isPending}
+          className="text-sm sm:text-base"
+        />
+        {errors.confirmPassword && (
+          <p className="text-xs text-destructive sm:text-sm">{errors.confirmPassword.message}</p>
+        )}
+      </div>
 
-        <div className="flex justify-end">
-          <Button type="submit" disabled={changePassword.isPending}>
-            {changePassword.isPending ? 'Mengubah...' : 'Ubah Password'}
-          </Button>
-        </div>
-      </form>
-    </Card>
+      <div className="flex justify-end">
+        <Button type="button" disabled={true} variant="outline" size="sm" className="w-full sm:w-auto">
+          Fitur belum tersedia
+        </Button>
+      </div>
+    </form>
   );
 }
 

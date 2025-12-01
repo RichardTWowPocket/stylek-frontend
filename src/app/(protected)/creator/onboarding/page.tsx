@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,7 +18,7 @@ import { toast } from '@/lib/ui/toast';
 
 const creatorOnboardingSchema = z.object({
   displayName: z.string().min(2, 'Nama lengkap minimal 2 karakter'),
-  creatorType: z.enum(['INDIVIDUAL', 'AGENCY']).optional(),
+  creatorType: z.enum(['INDIVIDUAL', 'AGENCY_CREATOR']).optional(),
   bio: z.string().optional(),
   mainNiche: z.string().optional(),
   city: z.string().optional(),
@@ -28,7 +29,7 @@ type CreatorOnboardingFormData = z.infer<typeof creatorOnboardingSchema>;
 
 export default function CreatorOnboardingPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   
   // Redirect to login if not authenticated
@@ -78,10 +79,14 @@ export default function CreatorOnboardingPage() {
 
       toast.success('Profile berhasil dibuat!');
       
-      // Refresh session to update hasProfile
-      // NextAuth will automatically update session on next request
-      // But we can force refresh by calling signIn again or refreshing page
-      window.location.href = routes.creator.dashboard;
+      // Refresh session to update hasProfile from backend
+      // This will trigger the JWT callback to fetch updated hasProfile
+      await update();
+      
+      // Small delay to ensure session is updated before redirect
+      setTimeout(() => {
+        router.push(routes.creator.dashboard);
+      }, 100);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Gagal menyimpan profile');
       setIsLoading(false);
@@ -90,6 +95,16 @@ export default function CreatorOnboardingPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          onClick={() => signOut({ callbackUrl: routes.login })}
+          className="flex items-center gap-2"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </Button>
+      </div>
       <Card className="p-6">
         <h1 className="mb-6 text-2xl font-bold">Lengkapi Profile Creator</h1>
         <p className="mb-6 text-muted-foreground">
@@ -119,7 +134,7 @@ export default function CreatorOnboardingPage() {
               disabled={isLoading}
             >
               <option value="INDIVIDUAL">Individual</option>
-              <option value="AGENCY">Agency</option>
+              <option value="AGENCY_CREATOR">Agency</option>
             </select>
           </div>
 

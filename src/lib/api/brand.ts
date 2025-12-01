@@ -43,7 +43,7 @@ export async function getBrandProfile(): Promise<BrandProfile> {
 }
 
 export async function getBrandWalletSummary(): Promise<BrandWalletSummary> {
-  const res = await api.get<BrandWalletSummary>('/wallet/brand');
+  const res = await api.get<BrandWalletSummary>('/wallet/brand/summary');
   return res.data;
 }
 

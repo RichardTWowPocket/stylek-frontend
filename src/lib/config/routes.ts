@@ -13,6 +13,7 @@ export const routes = {
     campaignNew: '/brand/campaigns/new',
     campaignDetail: (id: string) => `/brand/campaigns/${id}`,
     campaignEdit: (id: string) => `/brand/campaigns/${id}/edit`,
+    creators: '/brand/creators',
     profile: '/brand/profile',
     verification: '/brand/verification',
     wallet: '/brand/wallet',
