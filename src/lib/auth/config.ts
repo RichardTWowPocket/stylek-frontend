@@ -134,6 +134,11 @@ export const authOptions: NextAuthOptions = {
             timestamp: new Date().toISOString(),
           });
 
+          // Configure HTTPS agent for self-signed certificates in staging
+          const https = require('https');
+          const isStaging = API_BASE_URL.includes('staging');
+          const httpsAgent = isStaging ? new https.Agent({ rejectUnauthorized: false }) : undefined;
+          
           // Call backend with intendedRole
           const response = await axios.post(
             `${API_BASE_URL}/auth/google`,
@@ -149,6 +154,7 @@ export const authOptions: NextAuthOptions = {
               headers: {
                 'Content-Type': 'application/json',
               },
+              ...(httpsAgent && { httpsAgent }),
             }
           );
 
@@ -285,6 +291,17 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: (() => {
+    // Support reading from Docker secrets file or environment variable
+    if (process.env.NEXTAUTH_SECRET_FILE) {
+      try {
+        const fs = require('fs');
+        return fs.readFileSync(process.env.NEXTAUTH_SECRET_FILE, 'utf8').trim();
+      } catch (error) {
+        console.warn('Failed to read NEXTAUTH_SECRET_FILE, falling back to NEXTAUTH_SECRET env var');
+      }
+    }
+    return process.env.NEXTAUTH_SECRET;
+  })(),
 };
 

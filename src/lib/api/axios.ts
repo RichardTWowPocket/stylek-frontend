@@ -1,11 +1,19 @@
 import axios from 'axios';
 import { getSession, signOut } from 'next-auth/react';
+import https from 'https';
 
 // Backend uses global prefix 'api', so we need to include it
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api';
 
 // Flag to prevent multiple simultaneous logout attempts
 let isLoggingOut = false;
+
+// Create HTTPS agent for self-signed certificates in staging
+// For staging environments, we need to accept self-signed certificates
+const isStaging = API_BASE_URL.includes('staging');
+const httpsAgent = API_BASE_URL.startsWith('https') && isStaging
+  ? new https.Agent({ rejectUnauthorized: false })
+  : undefined;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,6 +23,7 @@ export const api = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
+  ...(httpsAgent && { httpsAgent }),
 });
 
 api.interceptors.request.use(
