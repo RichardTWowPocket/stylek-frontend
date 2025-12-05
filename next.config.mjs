@@ -10,6 +10,11 @@ const nextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+  images: {
+    // Allow images from public folder
+    unoptimized: false,
+    remotePatterns: [],
+  },
   // Allow self-signed certificates in server-side requests for staging
   webpack: (config, { isServer }) => {
     if (isServer) {

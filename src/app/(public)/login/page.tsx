@@ -9,7 +9,6 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AuthCard } from '@/components/auth/AuthCard';
 import { routes } from '@/lib/config/routes';
 import Link from 'next/link';
 
@@ -178,15 +177,31 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-      <AuthCard title="Welcome back 👋" description="Masuk ke akun Anda">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="min-h-screen flex">
+      {/* Left Side - Login Form */}
+      <div className="flex-1 flex items-center justify-center bg-background p-4 sm:p-6 lg:p-8">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <div className="w-10 h-10 rounded-lg bg-[#6c74ab] flex items-center justify-center">
+              <span className="text-white font-bold text-xl">S</span>
+            </div>
+            <span className="text-2xl font-bold text-foreground">StyleK</span>
+          </div>
+
+          {/* Header */}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-foreground">Welcome to StyleK</h1>
+            <p className="text-muted-foreground">Sign into your account</p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="nama@email.com"
+              placeholder="Phone or Email address"
               {...register('email')}
               disabled={isLoading}
             />
@@ -269,7 +284,21 @@ export default function LoginPage() {
             </Link>
           </div>
         </form>
-      </AuthCard>
+        </div>
+      </div>
+
+      {/* Right Side - Illustration */}
+      <div className="hidden lg:flex flex-1 items-center justify-center bg-gradient-to-br from-[#FEFBF7] via-[#F5E6D3] to-[#F5C2D1]/30 p-8">
+        <div className="w-full max-w-2xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/hero-section1.png"
+            alt="StyleK - Kolaborasi Brand dan Creator"
+            className="w-full h-auto object-contain"
+            loading="eager"
+          />
+        </div>
+      </div>
     </div>
   );
 }

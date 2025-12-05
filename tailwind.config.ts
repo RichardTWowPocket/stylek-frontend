@@ -11,17 +11,28 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#2563EB",
+          DEFAULT: "#6c74ab", // Primary color
           foreground: "#ffffff",
         },
-        success: "#22C55E",
-        warning: "#F59E0B",
-        destructive: "#EF4444",
-        muted: {
-          DEFAULT: "#F1F5F9",
-          foreground: "#64748B",
+        purple: {
+          DEFAULT: "#B8A9D9", // Soft lavender
+          foreground: "#ffffff",
         },
-        border: "#E5E7EB",
+        pink: {
+          DEFAULT: "#F5C2D1", // Soft rose pink
+        },
+        peach: {
+          DEFAULT: "#F5E6D3", // Warm peach beige
+          darker: "#E8D4C1", // Richer peach
+        },
+        success: "#A8D5BA", // Soft mint green
+        warning: "#F5D5A3", // Soft amber
+        destructive: "#F5A3A3", // Soft coral red
+        muted: {
+          DEFAULT: "#F5F0EB", // Warm light beige
+          foreground: "#8B8B8B", // Soft gray
+        },
+        border: "#E8E0D8", // Warm light beige border
         background: "rgb(var(--background) / <alpha-value>)",
         foreground: "rgb(var(--foreground) / <alpha-value>)",
       },
